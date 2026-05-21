@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MediChain — Sistema de Gestión Médica</title>
+
+  <!-- FUENTES -->
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+  
+  <!-- VÍNCULO AL ARCHIVO CSS EXTERNO -->
+  <link rel="stylesheet" href="style.css"/>
+
+  <!-- icono -->
+   <link rel="icon" type="image/x-icon" href="img/medichainpng.png">
+</head>
+<body>
+
+  <!-- PANTALLA DE LOGIN -->
+  <div id="screen-login">
+    <div class="login-card">
+      <div class="login-logo">
+        <div class="logo-icon"><img src="img/medichainpng.png" height="550px"></div>
+        <h1>MediChain</h1>
+      </div>
+      <h2>Acceso al sistema</h2>
+      <p>Ingrese sus credenciales para continuar</p>
+
+      <div class="form-group">
+        <label>Cédula / Usuario</label>
+        <input type="text" id="login-user" placeholder="ej. DR-000123" value="DR-000123"/>
+      </div>
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" id="login-pass" placeholder="••••••••" value="12345"/>
+      </div>
+      <button class="btn-primary" onclick="doLogin()">Iniciar sesión</button>
+      <p class="login-note">Credenciales demo: <span>DR-000123</span> / <span>12345</span></p>
+    </div>
+  </div>
+
+  <!-- APLICACIÓN PRINCIPAL -->
+  <div id="app" class="hidden">
+
+    <!-- SIDEBAR DE NAVEGACIÓN -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">🔗</div>
+        <span>MediChain<sup>β</sup></span>
+      </div>
+
+      <div class="sidebar-section-label">Principal</div>
+      <div class="nav-item active" onclick="showSection('dashboard')">
+        <span class="icon">🏠</span> Inicio
+      </div>
+      <div class="nav-item" onclick="showSection('patients')">
+        <span class="icon">👥</span> Pacientes
+        <span class="nav-badge">12</span>
+      </div>
+      <div class="nav-item" onclick="showSection('appointments')">
+        <span class="icon">📅</span> Citas médicas
+      </div>
+      <div class="nav-item" onclick="showSection('historial')">
+        <span class="icon">🧪</span> Historial / Estudios
+      </div>
+
+      <div class="sidebar-section-label">Configuración</div>
+      <div class="nav-item" onclick="showSection('profile-doctor')">
+        <span class="icon">👨‍⚕️</span> Mi perfil
+      </div>
+      <div class="nav-item" onclick="alert('Próximamente: Configuración del sistema')">
+        <span class="icon">⚙️</span> Configuración
+      </div>
+
+      <!-- Mini perfil en el pie del sidebar -->
+      <div class="sidebar-footer">
+        <div class="doctor-mini" onclick="showSection('profile-doctor')">
+          <div class="avatar">RM</div>
+          <div class="info">
+            <span>Dr. R. Morales</span>
+            <small>Medicina Interna</small>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ÁREA PRINCIPAL -->
+    <main class="main">
+
+      <!-- TOPBAR -->
+      <div class="topbar">
+        <h2 id="topbar-title">Panel de inicio</h2>
+        <div class="topbar-actions">
+          <button class="btn-icon" title="Notificaciones" onclick="alert('3 notificaciones pendientes')">🔔</button>
+          <button class="btn-icon" title="Buscar" onclick="alert('Búsqueda global — próximamente')">🔍</button>
+          <button class="btn-sm" onclick="openModal('modal-new-appt')">+ Nueva cita</button>
+        </div>
+      </div>
+
+      <!-- SCROLL AREA CONTENIDO -->
+      <div class="content-area">
+
+        <!-- SECCIÓN 1: DASHBOARD -->
+        <section id="section-dashboard" class="section active">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon">👥</div>
+              <div class="stat-val">12</div>
+              <div class="stat-lbl">Pacientes activos</div>
+            </div>
+            <div class="stat-card ok">
+              <div class="stat-icon">✅</div>
+              <div class="stat-val">4</div>
+              <div class="stat-lbl">Citas hoy</div>
+            </div>
+            <div class="stat-card warn">
+              <div class="stat-icon">⏳</div>
+              <div class="stat-val">7</div>
+              <div class="stat-lbl">Citas pendientes</div>
+            </div>
+            <div class="stat-card info">
+              <div class="stat-icon">🧪</div>
+              <div class="stat-val">3</div>
+              <div class="stat-lbl">Estudios por revisar</div>
+            </div>
+          </div>
+
+          <div class="dash-grid">
+            <div class="card">
+              <div class="card-title">📅 Citas de hoy</div>
+              <div class="next-appt">
+                <div class="appt-row">
+                  <div class="appt-time">09:00</div>
+                  <div class="appt-info">
+                    <strong>María López García</strong>
+                    <span>Revisión general · Consultorio 3</span>
+                  </div>
+                  <span class="badge badge-ok">En curso</span>
+                </div>
+                <div class="appt-row">
+                  <div class="appt-time">10:30</div>
+                  <div class="appt-info">
+                    <strong>Carlos Fernández R.</strong>
+                    <span>Seguimiento HTA · Consultorio 3</span>
+                  </div>
+                  <span class="badge badge-warn">Próxima</span>
+                </div>
+                <div class="appt-row">
+                  <div class="appt-time">12:00</div>
+                  <div class="appt-info">
+                    <strong>Ana Beatriz Soto</strong>
+                    <span>Resultados de lab · Consultorio 3</span>
+                  </div>
+                  <span class="badge badge-neutral">Pendiente</span>
+                </div>
+                <div class="appt-row">
+                  <div class="appt-time">15:00</div>
+                  <div class="appt-info">
+                    <strong>Jorge Manuel Cruz</strong>
+                    <span>Primera vez · Consultorio 3</span>
+                  </div>
+                  <span class="badge badge-neutral">Pendiente</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">⚡ Acciones rápidas</div>
+              <div class="quick-links">
+                <div class="quick-card" onclick="openModal('modal-new-appt')">
+                  <span class="quick-icon">📅</span>Nueva cita
+                </div>
+                <div class="quick-card" onclick="showSection('patients')">
+                  <span class="icon quick-icon">👥</span>Ver pacientes
+                </div>
+                <div class="quick-card" onclick="showSection('historial')">
+                  <span class="quick-icon">🧪</span>Estudios
+                </div>
+                <div class="quick-card" onclick="openModal('modal-new-patient')">
+                  <span class="quick-icon">➕</span>Nuevo paciente
+                </div>
+              </div>
+
+              <div style="margin-top:1rem; background:#fff8ec; border-radius:9px; padding:1rem; border-left:3px solid var(--warn);">
+                <strong style="font-size:.85rem;">⚠️ Estudios pendientes de revisión</strong>
+                <p class="text-muted" style="margin-top:.3rem;">
+                  3 pacientes tienen resultados de laboratorio sin revisar.
+                  <br><a href="#" onclick="showSection('historial');return false;" style="color:var(--accent);font-weight:600;">Revisar ahora →</a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 2: LISTA DE PACIENTES -->
+        <section id="section-patients" class="section">
+          <div class="search-bar">
+            <input type="text" placeholder="🔍  Buscar paciente por nombre, padecimiento, folio…" oninput="filterPatients(this.value)"/>
+            <button class="btn-sm" onclick="openModal('modal-new-patient')">+ Agregar paciente</button>
+          </div>
+
+          <div id="patients-list">
+            <!-- Paciente 1 -->
+            <div class="patient-card" id="pc-1">
+              <div class="patient-header" onclick="togglePatient('pc-1')">
+                <div class="patient-avatar" style="background:linear-gradient(135deg,#0ea5a0,#134e5e)">ML</div>
+                <div class="patient-basic">
+                  <strong>María López García</strong>
+                  <span>Hipertensión arterial · Diabetes tipo 2</span>
+                </div>
+                <div class="patient-meta">
+                  <span class="badge badge-warn">En tratamiento</span>
+                  <span class="badge badge-info">IMSS · 4528-71-0033</span>
+                  <span class="text-muted" style="font-size:.8rem;">62 años</span>
+                </div>
+                <button class="expand-btn">▼</button>
+              </div>
+              <div class="patient-collapse">
+                <div class="patient-quick-info">
+                  <div class="info-item"><label>Fecha de nac.</label><span>14 / Mar / 1962</span></div>
+                  <div class="info-item"><label>Sexo</label><span>Femenino</span></div>
+                  <div class="info-item"><label>Institución</label><span>IMSS</span></div>
+                  <div class="info-item"><label>Folio</label><span>4528-71-0033</span></div>
+                  <div class="info-item"><label>Padecimiento</label><span>HTA · DM2</span></div>
+                  <div class="info-item"><label>Última cita</label><span>08 / May / 2026</span></div>
+                </div>
+                <div class="patient-actions">
+                  <button class="btn-sm" onclick="openPatientProfile(1)">👁 Ver perfil completo</button>
+                  <button class="btn-sm outline" onclick="openModal('modal-new-appt')">📅 Agendar cita</button>
+                  <button class="btn-ghost">📋 Notas</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Paciente 2 -->
+            <div class="patient-card" id="pc-2">
+              <div class="patient-header" onclick="togglePatient('pc-2')">
+                <div class="patient-avatar" style="background:linear-gradient(135deg,#6c8ebf,#3b5998)">CF</div>
+                <div class="patient-basic">
+                  <strong>Carlos Fernández Robledo</strong>
+                  <span>Hipertensión arterial · Control cardiovascular</span>
+                </div>
+                <div class="patient-meta">
+                  <span class="badge badge-ok">Estable</span>
+                  <span class="badge badge-info">ISSSTE · 9911-22-8876</span>
+                  <span class="text-muted" style="font-size:.8rem;">55 años</span>
+                </div>
+                <button class="expand-btn">▼</button>
+              </div>
+              <div class="patient-collapse">
+                <div class="patient-quick-info">
+                  <div class="info-item"><label>Fecha de nac.</label><span>03 / Sep / 1970</span></div>
+                  <div class="info-item"><label>Sexo</label><span>Masculino</span></div>
+                  <div class="info-item"><label>Institución</label><span>ISSSTE</span></div>
+                  <div class="info-item"><label>Folio</label><span>9911-22-8876</span></div>
+                  <div class="info-item"><label>Padecimiento</label><span>HTA, Dislipidemia</span></div>
+                  <div class="info-item"><label>Última cita</label><span>01 / May / 2026</span></div>
+                </div>
+                <div class="patient-actions">
+                  <button class="btn-sm" onclick="openPatientProfile(2)">👁 Ver perfil completo</button>
+                  <button class="btn-sm outline" onclick="openModal('modal-new-appt')">📅 Agendar cita</button>
+                  <button class="btn-ghost">📋 Notas</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Paciente 3 -->
+            <div class="patient-card" id="pc-3">
+              <div class="patient-header" onclick="togglePatient('pc-3')">
+                <div class="patient-avatar" style="background:linear-gradient(135deg,#e08a5e,#c06030)">AB</div>
+                <div class="patient-basic">
+                  <strong>Ana Beatriz Soto Medina</strong>
+                  <span>Hipotiroidismo · Anemia ferropénica</span>
+                </div>
+                <div class="patient-meta">
+                  <span class="badge badge-danger">Seguimiento urgente</span>
+                  <span class="badge badge-info">Particular</span>
+                  <span class="text-muted" style="font-size:.8rem;">38 años</span>
+                </div>
+                <button class="expand-btn">▼</button>
+              </div>
+              <div class="patient-collapse">
+                <div class="patient-quick-info">
+                  <div class="info-item"><label>Fecha de nac.</label><span>22 / Nov / 1987</span></div>
+                  <div class="info-item"><label>Sexo</label><span>Femenino</span></div>
+                  <div class="info-item"><label>Institución</label><span>Particular</span></div>
+                  <div class="info-item"><label>Folio</label><span>MED-00312</span></div>
+                  <div class="info-item"><label>Padecimiento</label><span>Hipotiroidismo, Anemia</span></div>
+                  <div class="info-item"><label>Última cita</label><span>30 / Abr / 2026</span></div>
+                </div>
+                <div class="patient-actions">
+                  <button class="btn-sm" onclick="openPatientProfile(3)">👁 Ver perfil completo</button>
+                  <button class="btn-sm outline" onclick="openModal('modal-new-appt')">📅 Agendar cita</button>
+                  <button class="btn-ghost">📋 Notas</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Paciente 4 -->
+            <div class="patient-card" id="pc-4">
+              <div class="patient-header" onclick="togglePatient('pc-4')">
+                <div class="patient-avatar" style="background:linear-gradient(135deg,#6dbf8e,#2a7a50)">JC</div>
+                <div class="patient-basic">
+                  <strong>Jorge Manuel Cruz Peña</strong>
+                  <span>Primera consulta · Sin diagnóstico previo</span>
+                </div>
+                <div class="patient-meta">
+                  <span class="badge badge-neutral">Primera vez</span>
+                  <span class="badge badge-info">Seguro Popular</span>
+                  <span class="text-muted" style="font-size:.8rem;">44 años</span>
+                </div>
+                <button class="expand-btn">▼</button>
+              </div>
+              <div class="patient-collapse">
+                <div class="patient-quick-info">
+                  <div class="info-item"><label>Fecha de nac.</label><span>17 / Jun / 1981</span></div>
+                  <div class="info-item"><label>Sexo</label><span>Masculino</span></div>
+                  <div class="info-item"><label>Institución</label><span>Seguro Popular</span></div>
+                  <div class="info-item"><label>Folio</label><span>SP-441-0099</span></div>
+                  <div class="info-item"><label>Padecimiento</label><span>Sin diagnóstico</span></div>
+                  <div class="info-item"><label>Última cita</label><span>—</span></div>
+                </div>
+                <div class="patient-actions">
+                  <button class="btn-sm" onclick="openPatientProfile(4)">👁 Ver perfil completo</button>
+                  <button class="btn-sm outline" onclick="openModal('modal-new-appt')">📅 Agendar cita</button>
+                  <button class="btn-ghost">📋 Notas</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 3: PERFIL COMPLETO DEL PACIENTE -->
+        <section id="section-patient-profile" class="section">
+          <button class="back-btn" onclick="showSection('patients')">← Volver a la lista</button>
+
+          <div class="patient-profile-header" id="pp-header">
+            <!-- Se llena dinámicamente mediante JS -->
+          </div>
+
+          <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('tab-history', this)">📋 Historial médico</button>
+            <button class="tab-btn" onclick="showTab('tab-meds', this)">💊 Medicamentos</button>
+            <button class="tab-btn" onclick="showTab('tab-appts', this)">📅 Citas</button>
+            <button class="tab-btn" onclick="showTab('tab-lab', this)">🧪 Laboratorio</button>
+          </div>
+
+          <!-- Tab: Historial Médico -->
+          <div id="tab-history" class="tab-content active card">
+            <div class="card-title">Historial clínico</div>
+            <div class="timeline">
+              <div class="tl-item">
+                <div class="tl-date">08 Mayo 2026</div>
+                <div class="tl-title">Revisión general — Control periódico</div>
+                <div class="tl-desc">Paciente refiere mareo ocasional y fatiga matutina. TA: 145/90 mmHg. Se ajusta dosis de Losartán. Se solicitan nuevos exámenes de laboratorio.</div>
+                <div class="tl-doctor">👨‍⚕️ Dr. R. Morales — Medicina Interna</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-date">15 Marzo 2026</div>
+                <div class="tl-title">Seguimiento HTA + DM2</div>
+                <div class="tl-desc">HbA1c: 7.2 % (mejoría respecto a visita anterior). TA: 138/85 mmHg. Se mantiene tratamiento actual. Se recomienda ajuste dietético.</div>
+                <div class="tl-doctor">👨‍⚕️ Dr. R. Morales — Medicina Interna</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-date">10 Enero 2026</div>
+                <div class="tl-title">Inicio de tratamiento con Metformina</div>
+                <div class="tl-desc">Diagnóstico confirmado de DM2 por glucosa en ayuno 178 mg/dL and HbA1c 8.1 %. Se inicia Metformina 850 mg c/12 h. Orientación nutricional.</div>
+                <div class="tl-doctor">👨‍⚕️ Dr. R. Morales — Medicina Interna</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-date">22 Sep 2025</div>
+                <div class="tl-title">Primera consulta</div>
+                <div class="tl-desc">Paciente acude por cefalea recurrente y cifras de tensión elevadas en casa. Antecedentes: madre con HTA. Se inicia Losartán 50 mg/día.</div>
+                <div class="tl-doctor">👨‍⚕️ Dr. R. Morales — Medicina Interna</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: Medicamentos -->
+          <div id="tab-meds" class="tab-content card">
+            <div class="card-title">Medicamentos actuales y anteriores</div>
+            <table class="med-table">
+              <thead>
+                <tr>
+                  <th>Medicamento</th>
+                  <th>Dosis</th>
+                  <th>Frecuencia</th>
+                  <th>Inicio</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Losartán</strong><br><small>50 mg</small></td>
+                  <td>50 mg</td><td>1 vez / día</td><td>Sep 2025</td>
+                  <td><span class="badge badge-ok">Activo</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Metformina</strong><br><small>850 mg</small></td>
+                  <td>850 mg</td><td>c/12 h</td><td>Ene 2026</td>
+                  <td><span class="badge badge-ok">Activo</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Atorvastatina</strong><br><small>20 mg</small></td>
+                  <td>20 mg</td><td>1 vez / noche</td><td>Mar 2026</td>
+                  <td><span class="badge badge-ok">Activo</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Aspirina</strong><br><small>100 mg</small></td>
+                  <td>100 mg</td><td>1 vez / día</td><td>Oct 2025</td>
+                  <td><span class="badge badge-neutral">Suspendido</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Tab: Citas del Paciente -->
+          <div id="tab-appts" class="tab-content">
+            <div class="card-title">Citas del paciente</div>
+            <p class="text-muted mt-1" style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;">Próximas</p>
+            <div class="cita-row futura mt-1">
+              <div class="cita-fecha"><span>16</span>Mayo 2026</div>
+              <div class="cita-info"><strong>Revisión general</strong><small>09:00 h · Consultorio 3 · Dr. R. Morales</small></div>
+              <span class="badge badge-ok">Confirmada</span>
+            </div>
+            <div class="cita-row pendiente">
+              <div class="cita-fecha"><span>02</span>Jun 2026</div>
+              <div class="cita-info"><strong>Resultados de laboratorio</strong><small>11:30 h · Consultorio 3 · Dr. R. Morales</small></div>
+              <span class="badge badge-warn">Pendiente</span>
+            </div>
+
+            <p class="text-muted mt-2" style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;">Pasadas</p>
+            <div class="cita-row pasada mt-1">
+              <div class="cita-fecha"><span>08</span>May 2026</div>
+              <div class="cita-info"><strong>Control periódico</strong><small>09:30 h · Consultorio 3</small></div>
+              <span class="badge badge-neutral">Completada</span>
+            </div>
+            <div class="cita-row pasada">
+              <div class="cita-fecha"><span>15</span>Mar 2026</div>
+              <div class="cita-info"><strong>Seguimiento HTA + DM2</strong><small>10:00 h · Consultorio 3</small></div>
+              <span class="badge badge-neutral">Completada</span>
+            </div>
+          </div>
+
+          <!-- Tab: Laboratorio -->
+          <div id="tab-lab" class="tab-content">
+            <div class="card-title" style="margin-bottom:.7rem;">Estudios de laboratorio y especiales</div>
+            <p class="text-muted" style="font-size:.82rem;margin-bottom:1rem;">
+              📌 Los documentos son subidos por el paciente a través de su portal. El médico puede visualizarlos y agregar notas.
+            </p>
+            <div class="lab-item">
+              <div class="lab-icon">🩸</div>
+              <div class="lab-info">
+                <strong>Biometría hemática completa</strong>
+                <small>08 May 2026 · PDF · Subido por paciente</small>
+              </div>
+              <div class="lab-actions">
+                <button class="btn-ghost" onclick="alert('Visualizador de PDF — próximamente')">👁 Ver</button>
+                <button class="btn-ghost" onclick="alert('Función de notas — próximamente')">📝 Nota</button>
+              </div>
+            </div>
+            <div class="lab-item">
+              <div class="lab-icon">🧬</div>
+              <div class="lab-info">
+                <strong>HbA1c + Glucosa en ayuno</strong>
+                <small>08 May 2026 · PDF · Subido por paciente</small>
+              </div>
+              <div class="lab-actions">
+                <button class="btn-ghost" onclick="alert('Visualizador de PDF — próximamente')">👁 Ver</button>
+                <button class="btn-ghost" onclick="alert('Función de notas — próximamente')">📝 Nota</button>
+              </div>
+            </div>
+            <div class="lab-item">
+              <div class="lab-icon">❤️</div>
+              <div class="lab-info">
+                <strong>Electrocardiograma</strong>
+                <small>15 Mar 2026 · PDF · Subido por paciente</small>
+              </div>
+              <div class="lab-actions">
+                <button class="btn-ghost" onclick="alert('Visualizador de PDF — próximamente')">👁 Ver</button>
+                <button class="btn-ghost" onclick="alert('Función de notas — próximamente')">📝 Nota</button>
+              </div>
+            </div>
+            <div class="lab-item">
+              <div class="lab-icon">🫘</div>
+              <div class="lab-info">
+                <strong>Ultrasonido renal</strong>
+                <small>10 Ene 2026 · Imagen JPG · Subido por paciente</small>
+              </div>
+              <div class="lab-actions">
+                <button class="btn-ghost" onclick="alert('Visualizador de imagen — próximamente')">👁 Ver</button>
+                <button class="btn-ghost" onclick="alert('Función de notas — próximamente')">📝 Nota</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 4: CITAS MÉDICAS (Listado Global) -->
+        <section id="section-appointments" class="section">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.2rem;">
+            <div class="tabs" style="margin-bottom:0;border:none;">
+              <button class="tab-btn active" onclick="showTab('appt-futuras', this)">🟢 Futuras</button>
+              <button class="tab-btn" onclick="showTab('appt-pendientes', this)">🟡 Pendientes</button>
+              <button class="tab-btn" onclick="showTab('appt-pasadas', this)">⚪ Pasadas</button>
+            </div>
+            <button class="btn-sm" onclick="openModal('modal-new-appt')">+ Nueva cita</button>
+          </div>
+
+          <div id="appt-futuras" class="tab-content active">
+            <div class="cita-row futura"><div class="cita-fecha"><span>16</span>May</div><div class="cita-info"><strong>María López García</strong><small>09:00 h · Revisión general · Consultorio 3</small></div><span class="badge badge-ok">Confirmada</span></div>
+            <div class="cita-row futura"><div class="cita-fecha"><span>16</span>May</div><div class="cita-info"><strong>Carlos Fernández R.</strong><small>10:30 h · HTA Control · Consultorio 3</small></div><span class="badge badge-ok">Confirmada</span></div>
+            <div class="cita-row futura"><div class="cita-fecha"><span>16</span>May</div><div class="cita-info"><strong>Ana Beatriz Soto</strong><small>12:00 h · Resultados lab · Consultorio 3</small></div><span class="badge badge-ok">Confirmada</span></div>
+            <div class="cita-row futura"><div class="cita-fecha"><span>16</span>May</div><div class="cita-info"><strong>Jorge Manuel Cruz</strong><small>15:00 h · Primera vez · Consultorio 3</small></div><span class="badge badge-ok">Confirmada</span></div>
+            <div class="cita-row futura"><div class="cita-fecha"><span>20</span>May</div><div class="cita-info"><strong>María López García</strong><small>11:00 h · Revisión post-lab · Consultorio 3</small></div><span class="badge badge-warn">Por confirmar</span></div>
+          </div>
+
+          <div id="appt-pendientes" class="tab-content">
+            <div class="cita-row pendiente"><div class="cita-fecha"><span>02</span>Jun</div><div class="cita-info"><strong>María López García</strong><small>11:30 h · Resultados laboratorio · Consultorio 3</small></div><span class="badge badge-warn">Sin confirmar</span></div>
+            <div class="cita-row pendiente"><div class="cita-fecha"><span>10</span>Jun</div><div class="cita-info"><strong>Ana Beatriz Soto</strong><small>09:00 h · Seguimiento anemia · Consultorio 3</small></div><span class="badge badge-warn">Sin confirmar</span></div>
+            <div class="cita-row pendiente"><div class="cita-fecha"><span>15</span>Jun</div><div class="cita-info"><strong>Carlos Fernández R.</strong><small>10:00 h · Control cardiovascular</small></div><span class="badge badge-warn">Sin confirmar</span></div>
+          </div>
+
+          <div id="appt-pasadas" class="tab-content">
+            <div class="cita-row pasada"><div class="cita-fecha"><span>08</span>May</div><div class="cita-info"><strong>María López García</strong><small>09:30 h · Control periódico</small></div><span class="badge badge-neutral">Completada</span></div>
+            <div class="cita-row pasada"><div class="cita-fecha"><span>01</span>May</div><div class="cita-info"><strong>Carlos Fernández R.</strong><small>10:00 h · Seguimiento HTA</small></div><span class="badge badge-neutral">Completada</span></div>
+            <div class="cita-row pasada"><div class="cita-fecha"><span>30</span>Abr</div><div class="cita-info"><strong>Ana Beatriz Soto</strong><small>09:00 h · Hipotiroidismo</small></div><span class="badge badge-neutral">Completada</span></div>
+            <div class="cita-row pasada"><div class="cita-fecha"><span>15</span>Mar</div><div class="cita-info"><strong>María López García</strong><small>10:00 h · HTA + DM2</small></div><span class="badge badge-neutral">Completada</span></div>
+            <div class="cita-row pasada" style="border-color:var(--danger)"><div class="cita-fecha"><span>10</span>Feb</div><div class="cita-info"><strong>Paciente cancelado</strong><small>11:00 h · Cancelación por paciente</small></div><span class="badge badge-danger">Cancelada</span></div>
+          </div>
+        </section>
+
+        <!-- SECCIÓN 5: HISTORIAL / ESTUDIOS GLOBAL -->
+        <section id="section-historial" class="section">
+          <div class="filter-bar">
+            <input type="text" placeholder="🔍 Buscar por paciente o tipo…"/>
+            <select>
+              <option>Todos los tipos</option>
+              <option>Laboratorio</option>
+              <option>Imagen</option>
+              <option>Especiales</option>
+            </select>
+            <select>
+              <option>Todos los pacientes</option>
+              <option>María López</option>
+              <option>Carlos Fernández</option>
+              <option>Ana Beatriz Soto</option>
+            </select>
+          </div>
+          
+          <div class="lab-item"><div class="lab-icon">🩸</div><div class="lab-info"><strong>Biometría hemática completa</strong><small>María López · 08 May 2026 · PDF · Pendiente revisión</small></div><div class="lab-actions"><button class="btn-ghost">👁 Ver</button><span class="badge badge-warn" style="margin-left:.3rem;">Sin revisar</span></div></div>
+          <div class="lab-item"><div class="lab-icon">🧬</div><div class="lab-info"><strong>HbA1c + Glucosa</strong><small>María López · 08 May 2026 · PDF · Pendiente revisión</small></div><div class="lab-actions"><button class="btn-ghost">👁 Ver</button><span class="badge badge-warn" style="margin-left:.3rem;">Sin revisar</span></div></div>
+          <div class="lab-item"><div class="lab-icon">❤️</div><div class="lab-info"><strong>Electrocardiograma</strong><small>Carlos Fernández · 28 Abr 2026 · PDF · Revisado</small></div><div class="lab-actions"><button class="btn-ghost">👁 Ver</button><span class="badge badge-ok" style="margin-left:.3rem;">Revisado</span></div></div>
+          <div class="lab-item"><div class="lab-icon">🧪</div><div class="lab-info"><strong>Perfil tiroideo</strong><small>Ana Beatriz Soto · 25 Abr 2026 · PDF · Sin revisar</small></div><div class="lab-actions"><button class="btn-ghost">👁 Ver</button><span class="badge badge-warn" style="margin-left:.3rem;">Sin revisar</span></div></div>
+          <div class="lab-item"><div class="lab-icon">🫘</div><div class="lab-info"><strong>Ultrasonido renal bilateral</strong><small>María López · 10 Ene 2026 · JPG · Revisado</small></div><div class="lab-actions"><button class="btn-ghost">👁 Ver</button><span class="badge badge-ok" style="margin-left:.3rem;">Revisado</span></div></div>
+          <div class="lab-item"><div class="lab-icon">🦴</div><div class="lab-info"><strong>Densitometría ósea</strong><small>Ana Beatriz Soto · 15 Mar 2026 · PDF · Revisado</small></div><div class="lab-actions"><button class="btn-ghost">👁 Ver</button><span class="badge badge-ok" style="margin-left:.3rem;">Revisado</span></div></div>
+        </section>
+
+        <!-- SECCIÓN 6: PERFIL DEL MÉDICO -->
+        <section id="section-profile-doctor" class="section">
+          <div class="card" style="margin-bottom:1.2rem;">
+            <div class="profile-header">
+              <div class="avatar-lg">RM</div>
+              <div>
+                <h3>Dr. Roberto Morales Jiménez</h3>
+                <p>🏥 Medicina Interna · Subespecialidad: Cardiología</p>
+                <p>🎓 UNAM — Egresado 2001 · CMN Siglo XXI</p>
+                <div style="margin-top:.6rem;">
+                  <span class="badge badge-ok">✔ Activo</span>
+                  <span class="badge badge-info" style="margin-left:.4rem;">Consultorio 3</span>
+                </div>
+              </div>
+              <button class="btn-sm outline" style="margin-left:auto;" onclick="openModal('modal-edit-profile')">✏️ Editar perfil</button>
+            </div>
+            <div class="info-grid">
+              <div class="info-item"><label>Cédula profesional</label><span>3.419.287</span></div>
+              <div class="info-item"><label>Especialidad</label><span>Medicina Interna</span></div>
+              <div class="info-item"><label>Subespecialidad</label><span>Cardiología clínica</span></div>
+              <div class="info-item"><label>Hospital base</label><span>CMN Siglo XXI — IMSS</span></div>
+              <div class="info-item"><label>Consultorio particular</label><span>Consultorio 3 — Torre Médica Norte</span></div>
+              <div class="info-item"><label>Teléfono de contacto</label><span>+52 (55) 8800-0033</span></div>
+              <div class="info-item"><label>Correo electrónico</label><span>r.morales@medichain.mx</span></div>
+              <div class="info-item"><label>Horario de consulta</label><span>Lun–Vie · 09:00–17:00 h</span></div>
+            </div>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-val">12</div><div class="stat-lbl">Pacientes activos</div></div>
+            <div class="stat-card ok"><div class="stat-icon">📅</div><div class="stat-val">142</div><div class="stat-lbl">Consultas totales</div></div>
+            <div class="stat-card info"><div class="stat-icon">🧪</div><div class="stat-val">58</div><div class="stat-lbl">Estudios revisados</div></div>
+            <div class="stat-card warn"><div class="stat-icon">⭐</div><div class="stat-val">4.9</div><div class="stat-lbl">Calificación pacientes</div></div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- MODALES -->
+  <!-- Modal: Nueva cita -->
+  <div class="modal-overlay" id="modal-new-appt">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>📅 Agendar nueva cita</h3>
+        <button class="modal-close" onclick="closeModal('modal-new-appt')">✕</button>
+      </div>
+      <div class="form-group">
+        <label>Paciente</label>
+        <select style="width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:.95rem;outline:none;">
+          <option>María López García</option>
+          <option>Carlos Fernández Robledo</option>
+          <option>Ana Beatriz Soto Medina</option>
+          <option>Jorge Manuel Cruz Peña</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Fecha</label><input type="date"/></div>
+      <div class="form-group"><label>Hora</label><input type="time"/></div>
+      <div class="form-group">
+        <label>Motivo de consulta</label>
+        <input type="text" placeholder="ej. Control HTA, Primera vez…"/>
+      </div>
+      <div class="form-group">
+        <label>Notas adicionales</label>
+        <textarea style="width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:.9rem;resize:vertical;min-height:80px;outline:none;" placeholder="Observaciones opcionales…"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-sm outline" onclick="closeModal('modal-new-appt')">Cancelar</button>
+        <button class="btn-sm" onclick="alert('Cita agendada (demo). Backend próximamente.');closeModal('modal-new-appt')">Guardar cita</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Nuevo paciente -->
+  <div class="modal-overlay" id="modal-new-patient">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>➕ Registrar nuevo paciente</h3>
+        <button class="modal-close" onclick="closeModal('modal-new-patient')">✕</button>
+      </div>
+      <div class="form-group"><label>Nombre completo</label><input type="text" placeholder="Nombre(s) Apellido Paterno Apellido Materno"/></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;">
+        <div class="form-group"><label>Fecha de nac.</label><input type="date"/></div>
+        <div class="form-group">
+          <label>Sexo</label>
+          <select style="width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:.95rem;outline:none;">
+            <option>Femenino</option><option>Masculino</option><option>Otro</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label>Padecimiento / Motivo</label><input type="text" placeholder="Diagnóstico principal o motivo de consulta"/></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;">
+        <div class="form-group">
+          <label>Institución</label>
+          <select style="width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);border-radius:var(--radius);font-family:inherit;font-size:.95rem;outline:none;">
+            <option>IMSS</option><option>ISSSTE</option><option>Seguro Popular</option><option>Particular</option><option>Otro</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Folio / NSS</label><input type="text" placeholder="Número de afiliación"/></div>
+      </div>
+      <div class="form-group"><label>Teléfono</label><input type="tel" placeholder="+52 (55) 0000-0000"/></div>
+      <div class="modal-footer">
+        <button class="btn-sm outline" onclick="closeModal('modal-new-patient')">Cancelar</button>
+        <button class="btn-sm" onclick="alert('Paciente registrado (demo). Backend próximamente.');closeModal('modal-new-patient')">Registrar paciente</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Editar perfil médico -->
+  <div class="modal-overlay" id="modal-edit-profile">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>✏️ Editar perfil médico</h3>
+        <button class="modal-close" onclick="closeModal('modal-edit-profile')">✕</button>
+      </div>
+      <div class="form-group"><label>Nombre completo</label><input type="text" value="Dr. Roberto Morales Jiménez"/></div>
+      <div class="form-group"><label>Especialidad</label><input type="text" value="Medicina Interna"/></div>
+      <div class="form-group"><label>Subespecialidad</label><input type="text" value="Cardiología clínica"/></div>
+      <div class="form-group"><label>Cédula profesional</label><input type="text" value="3.419.287"/></div>
+      <div class="form-group"><label>Hospital base</label><input type="text" value="CMN Siglo XXI — IMSS"/></div>
+      <div class="form-group"><label>Teléfono</label><input type="tel" value="+52 (55) 8800-0033"/></div>
+      <div class="form-group"><label>Correo electrónico</label><input type="email" value="r.morales@medichain.mx"/></div>
+      <div class="modal-footer">
+        <button class="btn-sm outline" onclick="closeModal('modal-edit-profile')">Cancelar</button>
+        <button class="btn-sm" onclick="alert('Perfil actualizado (demo). Backend próximamente.');closeModal('modal-edit-profile')">Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VÍNCULO AL ARCHIVO JAVASCRIPT EXTERNO -->
+  <script src="script.js"></script>
+</body>
+</html>
