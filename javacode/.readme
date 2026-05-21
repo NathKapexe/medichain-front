@@ -1,0 +1,171 @@
+/* ==========================================================
+    DATOS DE PACIENTES (Simulación de base de datos)
+   ========================================================== */
+const PATIENTS = {
+  1: {
+    initials: 'ML', color: 'linear-gradient(135deg,#0ea5a0,#134e5e)',
+    name: 'María López García', specialty: 'Hipertensión arterial · Diabetes tipo 2',
+    age: 62, dob: '14/Mar/1962', sex: 'Femenino',
+    inst: 'IMSS', folio: '4528-71-0033', status: 'En tratamiento', statusClass: 'badge-warn',
+    phone: '55 4412-3322', email: 'mlopez@correo.com', blood: 'A+'
+  },
+  2: {
+    initials: 'CF', color: 'linear-gradient(135deg,#6c8ebf,#3b5998)',
+    name: 'Carlos Fernández Robledo', specialty: 'Hipertensión arterial · Dislipidemia',
+    age: 55, dob: '03/Sep/1970', sex: 'Masculino',
+    inst: 'ISSSTE', folio: '9911-22-8876', status: 'Estable', statusClass: 'badge-ok',
+    phone: '55 7723-9900', email: 'cfernandez@correo.com', blood: 'O+'
+  },
+  3: {
+    initials: 'AB', color: 'linear-gradient(135deg,#e08a5e,#c06030)',
+    name: 'Ana Beatriz Soto Medina', specialty: 'Hipotiroidismo · Anemia ferropénica',
+    age: 38, dob: '22/Nov/1987', sex: 'Femenino',
+    inst: 'Particular', folio: 'MED-00312', status: 'Seguimiento urgente', statusClass: 'badge-danger',
+    phone: '55 3390-1122', email: 'absoto@correo.com', blood: 'B+'
+  },
+  4: {
+    initials: 'JC', color: 'linear-gradient(135deg,#6dbf8e,#2a7a50)',
+    name: 'Jorge Manuel Cruz Peña', specialty: 'Primera consulta',
+    age: 44, dob: '17/Jun/1981', sex: 'Masculino',
+    inst: 'Seguro Popular', folio: 'SP-441-0099', status: 'Primera vez', statusClass: 'badge-neutral',
+    phone: '55 6611-8844', email: 'jcruz@correo.com', blood: 'AB+'
+  }
+};
+
+/* Mapeo de títulos para el Topbar */
+const SECTION_TITLES = {
+  'dashboard':       'Panel de inicio',
+  'patients':        'Pacientes',
+  'appointments':    'Citas médicas',
+  'historial':       'Historial / Estudios',
+  'profile-doctor':  'Mi perfil',
+  'patient-profile': 'Perfil del paciente'
+};
+
+/* ==========================================================
+    FUNCIONES DE AUTENTICACIÓN (LOGIN)
+   ========================================================== */
+function doLogin() {
+  const user = document.getElementById('login-user').value.trim();
+  const pass = document.getElementById('login-pass').value.trim();
+  
+  if (user === 'DR-000123' && pass === '12345') {
+    document.getElementById('screen-login').style.opacity = '0';
+    document.getElementById('screen-login').style.transition = 'opacity .4s';
+    setTimeout(() => {
+      document.getElementById('screen-login').classList.add('hidden');
+      document.getElementById('app').classList.remove('hidden');
+    }, 400);
+  } else {
+    alert('❌ Credenciales incorrectas. Usa: DR-000123 / 12345');
+  }
+}
+
+/* Escucha la tecla Enter para procesar el login */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !document.getElementById('screen-login').classList.contains('hidden')) {
+    doLogin();
+  }
+});
+
+/* ==========================================================
+    NAVEGACIÓN INTERNA
+   ========================================================== */
+function showSection(id) {
+  /* Ocultar todas las secciones de contenido */
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  
+  /* Mostrar sección objetivo */
+  const target = document.getElementById('section-' + id);
+  if (target) target.classList.add('active');
+  
+  /* Sincronizar estado visual activo en el Sidebar */
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const navMap = {
+    'dashboard': 0, 'patients': 1, 'appointments': 2,
+    'historial': 3, 'profile-doctor': 4
+  };
+  const navItems = document.querySelectorAll('.nav-item');
+  if (navMap[id] !== undefined) navItems[navMap[id]].classList.add('active');
+  
+  /* Actualizar dinámicamente el título en el topbar */
+  document.getElementById('topbar-title').textContent = SECTION_TITLES[id] || 'MediChain';
+}
+
+/* ==========================================================
+    GESTIÓN DEL PERFIL DEL PACIENTE
+   ========================================================== */
+function openPatientProfile(id) {
+  const p = PATIENTS[id];
+  if (!p) return;
+  
+  /* Inyección dinámica de la cabecera del paciente */
+  document.getElementById('pp-header').innerHTML = `
+    <div class="pp-avatar" style="background:${p.color}">${p.initials}</div>
+    <div class="pp-info">
+      <h3>${p.name}</h3>
+      <p>${p.specialty} · ${p.age} años · ${p.sex}</p>
+      <div class="badges">
+        <span class="badge ${p.statusClass}">${p.status}</span>
+        <span class="badge badge-info">${p.inst} · ${p.folio}</span>
+        <span class="badge badge-neutral">🩸 ${p.blood}</span>
+        <span class="badge badge-neutral">🎂 ${p.dob}</span>
+      </div>
+    </div>
+    <div style="margin-left:auto;text-align:right;font-size:.82rem;color:var(--text-muted);">
+      <div>📞 ${p.phone}</div>
+      <div>✉️ ${p.email}</div>
+    </div>
+  `;
+  
+  /* Forzar regreso al primer Tab interno (Historial) al abrir un paciente */
+  showTab('tab-history', document.querySelector('#section-patient-profile .tab-btn'));
+  showSection('patient-profile');
+}
+
+/* Colapsar / Expandir acordeones rápidos de pacientes */
+function togglePatient(id) {
+  const card = document.getElementById(id);
+  card.classList.toggle('expanded');
+}
+
+/* Control de Sub-Tabs internos */
+function showTab(tabId, btn) {
+  const container = btn ? btn.closest('.section, .card') || document.body : document.body;
+
+  container.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  container.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  
+  const tab = document.getElementById(tabId);
+  if (tab) tab.classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+/* ==========================================================
+    CONTROLES DE MODALES
+   ========================================================== */
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+/* Cierre inteligente de modales al clickear fuera del contenedor blanco */
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('open');
+  });
+});
+
+/* ==========================================================
+    FILTROS DE BÚSQUEDA
+   ========================================================== */
+function filterPatients(query) {
+  const q = query.toLowerCase();
+  document.querySelectorAll('.patient-card').forEach(card => {
+    const text = card.textContent.toLowerCase();
+    card.style.display = text.includes(q) ? '' : 'none';
+  });
+}
