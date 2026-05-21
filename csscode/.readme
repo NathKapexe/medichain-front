@@ -1,0 +1,658 @@
+/* ============================================================
+       VARIABLES GLOBALES — Paleta clínica sobria:
+       Azul medianoche como base, turquesa suave como acento,
+       blancos cálidos y grises estructurados.
+       Cambiar aquí afecta todo el sitio de forma consistente.
+    ============================================================ */
+    :root {
+      --bg:          #f4f6f9;
+      --sidebar-bg:  #0d1b2a;
+      --sidebar-w:   260px;
+      --card:        #ffffff;
+      --accent:      #0ea5a0;       /* turquesa médica */
+      --accent-lt:   #e6f7f7;
+      --accent-dk:   #097b76;
+      --text:        #1a2332;
+      --text-muted:  #6b7a8d;
+      --border:      #dde3ec;
+      --danger:      #e05252;
+      --warn:        #e09a2b;
+      --ok:          #2bbf6e;
+      --radius:      10px;
+      --shadow:      0 2px 14px rgba(13,27,42,.09);
+      --transition:  .22s cubic-bezier(.4,0,.2,1);
+    }
+ 
+    /* ============================================================
+       RESET BÁSICO — Normaliza márgenes/padding y box-sizing
+       para que los cálculos de layout sean predecibles.
+    ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: 'DM Sans', sans-serif; }
+    body { background: var(--bg); color: var(--text); overflow: hidden; }
+ 
+    /* ==========================================================
+       UTILIDADES GENERALES
+    ========================================================== */
+    .hidden   { display: none !important; }
+    .flex     { display: flex; }
+    .flex-col { flex-direction: column; }
+    .gap-1    { gap: .5rem; }
+    .gap-2    { gap: 1rem; }
+    .gap-3    { gap: 1.5rem; }
+    .mt-1     { margin-top: .5rem; }
+    .mt-2     { margin-top: 1rem; }
+    .mt-3     { margin-top: 1.5rem; }
+    .fw-500   { font-weight: 500; }
+    .fw-600   { font-weight: 600; }
+    .text-muted { color: var(--text-muted); font-size: .85rem; }
+    .badge {
+      display: inline-flex; align-items: center; gap: .3rem;
+      padding: .2rem .7rem; border-radius: 999px;
+      font-size: .75rem; font-weight: 600; letter-spacing: .03em;
+    }
+    .badge-ok     { background: #d1f5e3; color: #1a7a46; }
+    .badge-warn   { background: #fef3d7; color: #8a5e0f; }
+    .badge-danger { background: #fde8e8; color: #8f2020; }
+    .badge-info   { background: var(--accent-lt); color: var(--accent-dk); }
+    .badge-neutral{ background: #eaedf2; color: #4a5568; }
+ 
+    /* ==========================================================
+       PANTALLA DE LOGIN
+       — Página independiente que cubre el 100vh/vw.
+       Al hacer submit, JS la oculta y muestra el dashboard.
+    ========================================================== */
+    #screen-login {
+      position: fixed; inset: 0;
+      background: linear-gradient(135deg, #0d1b2a 0%, #134e5e 60%, #0ea5a0 100%);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999;
+    }
+   .login-card {
+     background: #fff; 
+      border-radius: 18px;
+      padding: 2.8rem 2.5rem;
+      width: 100%; 
+      max-width: 400px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.35);
+      
+      
+      /* Contexto aislado para que la marca de agua no se vaya detrás del fondo blanco */
+      position: relative;
+      isolation: isolate; 
+    }
+
+    
+    .login-logo {
+      display: flex; 
+      align-items: center; 
+      gap: .7rem;
+      margin-bottom: 1.8rem;
+    }
+  .login-logo .logo-icon {  
+  /* 1. Dimensiones (puedes hacerlas más grandes si quieres que resalte más) */
+      width: 250px; 
+      height: 900px; 
+      border-radius: 10px;
+      overflow: hidden;
+   
+
+      /* 2. El truco de magia: Lo sacamos del flujo y lo centramos en la tarjeta */
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      /* 3. Transparencia y capas */
+      opacity: 30%;       /* 50% era muy fuerte y tapaba las letras, 0.15 es ideal como marca de agua */
+      z-index: 0;          /* Lo manda detrás de los textos e inputs */
+      pointer-events: none; /* Hace que sea invisible al mouse para que puedas dar clic a los inputs */
+
+      /* 4. Mantenemos el flex interno por si hay un icono/texto dentro de la caja */
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+  }
+  
+
+/* Busca el selector de tus grupos de formulario o etiquetas */
+.form-group {
+  position: relative;
+  z-index: 2; /* Los pone por encima del logo */
+}
+
+/* Busca el selector de tu botón principal */
+.btn-primary {
+  position: relative;
+  z-index: 2; /* El botón flotará arriba del logo */
+}
+.h1{
+  text-align: center;
+}
+/* Si tienes títulos h2 o párrafos p dentro de la tarjeta blanca */
+.login-card h2, 
+.login-card p, 
+.login-logo h1 {
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+    .login-logo h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.6rem; color: var(--text);
+      text-align: center; 
+  width: 100%;
+    }
+    .login-card h2 { font-size: 1.1rem; font-weight: 600; margin-bottom: .3rem; }
+    .login-card p  { color: var(--text-muted); font-size: .9rem; margin-bottom: 1.6rem; }
+    .form-group { margin-bottom: 1.2rem;  }
+    
+    .form-group label {
+      display: block; font-size: .82rem; font-weight: 600;
+      color: var(--text-muted); margin-bottom: .4rem; letter-spacing: .04em;
+      text-transform: uppercase;
+      
+    }
+    .form-group input {
+      width: 100%; padding: .75rem 1rem;
+      border: 1.5px solid var(--border); border-radius: var(--radius);
+      font-family: inherit; font-size: .95rem; color: var(--text);
+      transition: border-color var(--transition);
+      outline: none;
+      opacity: 50%;
+    }
+    .form-group input:focus { border-color: var(--accent); }
+    .btn-primary {
+      width: 100%; padding: .85rem;
+      background: var(--accent); color: #fff;
+      border: none; border-radius: var(--radius);
+      font-family: inherit; font-size: 1rem; font-weight: 600;
+      cursor: pointer; letter-spacing: .03em;
+      transition: background var(--transition), transform var(--transition);
+    }
+    .btn-primary:hover { background: var(--accent-dk); transform: translateY(-1px); }
+    .login-note { text-align: center; margin-top: 1rem; font-size: .8rem; color: var(--text-muted); }
+    .login-note span { color: var(--accent); font-weight: 600; }
+    .form-group input:hover{opacity: 100%; }
+
+    /* ==========================================================
+       LAYOUT PRINCIPAL: Sidebar + Contenido
+       — Oculto hasta que se hace login.
+    ========================================================== */
+    #app {
+      display: flex; height: 100vh; width: 100vw;
+      transition: opacity .3s;
+    }
+ 
+    /* ----------------------------------------------------------
+       SIDEBAR IZQUIERDO
+       — Navegación principal. Cada ítem llama a showSection()
+       para cambiar la vista sin recargar la página.
+    ---------------------------------------------------------- */
+    .sidebar {
+      width: var(--sidebar-w); min-width: var(--sidebar-w);
+      background: var(--sidebar-bg);
+      display: flex; flex-direction: column;
+      padding: 1.5rem 0;
+      overflow-y: auto;
+    }
+    .sidebar-logo {
+      display: flex; align-items: center; gap: .75rem;
+      padding: 0 1.4rem 1.8rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+    }
+    .sidebar-logo .logo-icon {
+      width: 38px; height: 38px; border-radius: 9px;
+      background: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; color: #fff; flex-shrink: 0;
+    }
+    .sidebar-logo span {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.35rem; color: #fff; letter-spacing: .01em;
+    }
+    .sidebar-logo sup {
+      font-family: 'DM Sans', sans-serif;
+      font-size: .55rem; background: var(--accent);
+      color: #fff; padding: .1rem .35rem; border-radius: 4px;
+      vertical-align: super; margin-left: .25rem; font-weight: 700;
+    }
+    .sidebar-section-label {
+      padding: 1.2rem 1.4rem .4rem;
+      font-size: .68rem; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: rgba(255,255,255,.3);
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: .8rem;
+      padding: .7rem 1.4rem; margin: .08rem .7rem;
+      border-radius: var(--radius); cursor: pointer;
+      color: rgba(255,255,255,.6); font-size: .9rem; font-weight: 500;
+      transition: background var(--transition), color var(--transition);
+      user-select: none;
+    }
+    .nav-item:hover { background: rgba(255,255,255,.07); color: #fff; }
+    /* Estado activo del ítem de navegación */
+    .nav-item.active {
+      background: var(--accent); color: #fff;
+      box-shadow: 0 3px 12px rgba(14,165,160,.4);
+    }
+    .nav-item .icon { font-size: 1.05rem; width: 1.3rem; text-align: center; }
+    .nav-item .nav-badge {
+      margin-left: auto; background: var(--danger);
+      color: #fff; font-size: .65rem; font-weight: 700;
+      padding: .1rem .45rem; border-radius: 999px;
+    }
+    .sidebar-footer {
+      margin-top: auto; padding: 1.2rem 1rem .5rem;
+      border-top: 1px solid rgba(255,255,255,.07);
+    }
+    .doctor-mini {
+      display: flex; align-items: center; gap: .8rem;
+      padding: .6rem .4rem; border-radius: var(--radius);
+      cursor: pointer; transition: background var(--transition);
+    }
+    .doctor-mini:hover { background: rgba(255,255,255,.07); }
+    .avatar {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #134e5e);
+      color: #fff; display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .9rem; flex-shrink: 0;
+    }
+    .doctor-mini .info span  { display: block; color: #fff; font-size: .85rem; font-weight: 600; }
+    .doctor-mini .info small { color: rgba(255,255,255,.45); font-size: .73rem; }
+ 
+    /* ----------------------------------------------------------
+       ÁREA PRINCIPAL DE CONTENIDO
+       — Scrollable, con topbar y secciones intercambiables.
+    ---------------------------------------------------------- */
+    .main {
+      flex: 1; display: flex; flex-direction: column;
+      overflow: hidden; min-width: 0;
+    }
+    /* TOPBAR */
+    .topbar {
+      background: var(--card); border-bottom: 1px solid var(--border);
+      padding: .9rem 1.8rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .topbar h2 { font-size: 1.1rem; font-weight: 700; }
+    .topbar-actions { display: flex; align-items: center; gap: .8rem; }
+    .btn-icon {
+      width: 36px; height: 36px; border-radius: 9px;
+      border: 1.5px solid var(--border); background: transparent;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 1rem; color: var(--text-muted);
+      transition: background var(--transition), color var(--transition);
+    }
+    .btn-icon:hover { background: var(--accent-lt); color: var(--accent); border-color: var(--accent); }
+    .btn-sm {
+      padding: .45rem 1rem; border-radius: 8px;
+      border: none; background: var(--accent); color: #fff;
+      font-family: inherit; font-size: .85rem; font-weight: 600;
+      cursor: pointer; transition: background var(--transition);
+    }
+    .btn-sm:hover { background: var(--accent-dk); }
+    .btn-sm.outline {
+      background: transparent; color: var(--accent);
+      border: 1.5px solid var(--accent);
+    }
+    .btn-sm.outline:hover { background: var(--accent-lt); }
+    /* CONTENIDO SCROLLABLE */
+    .content-area {
+      flex: 1; overflow-y: auto; padding: 1.8rem;
+    }
+    /* Cada sección es un bloque que se muestra/oculta por JS */
+    .section { display: none; animation: fadeIn .25s ease; }
+    .section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+ 
+    /* ==========================================================
+       CARDS REUTILIZABLES
+    ========================================================== */
+    .card {
+      background: var(--card); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 1.4rem;
+    }
+    .card-title {
+      font-size: .8rem; font-weight: 700; letter-spacing: .07em;
+      text-transform: uppercase; color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+    /* Grid de estadísticas en el dashboard */
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 1rem; margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: var(--card); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 1.3rem 1.4rem;
+      display: flex; flex-direction: column; gap: .3rem;
+      border-left: 4px solid var(--accent);
+      transition: transform var(--transition);
+    }
+    .stat-card:hover { transform: translateY(-2px); }
+    .stat-card.warn  { border-color: var(--warn); }
+    .stat-card.ok    { border-color: var(--ok); }
+    .stat-card.info  { border-color: #6c8ebf; }
+    .stat-card .stat-val  { font-size: 2rem; font-weight: 700; line-height: 1; }
+    .stat-card .stat-lbl  { font-size: .8rem; color: var(--text-muted); font-weight: 500; }
+    .stat-card .stat-icon { font-size: 1.4rem; margin-bottom: .3rem; }
+ 
+    /* ==========================================================
+       SECCIÓN: DASHBOARD / INICIO
+    ========================================================== */
+    .dash-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem;
+    }
+    .next-appt {
+      display: flex; flex-direction: column; gap: .7rem;
+    }
+    .appt-row {
+      display: flex; align-items: center; gap: .9rem;
+      padding: .75rem; border-radius: 9px; background: var(--bg);
+      transition: background var(--transition);
+    }
+    .appt-row:hover { background: var(--accent-lt); }
+    .appt-time {
+      min-width: 58px; text-align: center;
+      font-size: .82rem; font-weight: 700; color: var(--accent);
+    }
+    .appt-info { flex: 1; }
+    .appt-info strong { font-size: .9rem; display: block; }
+    .appt-info span   { font-size: .78rem; color: var(--text-muted); }
+    .quick-links {
+      display: grid; grid-template-columns: 1fr 1fr; gap: .7rem;
+    }
+    .quick-card {
+      background: var(--bg); border-radius: 9px; padding: 1rem;
+      text-align: center; cursor: pointer; font-size: .85rem;
+      font-weight: 600; color: var(--text);
+      transition: background var(--transition), color var(--transition);
+      border: 1.5px solid transparent;
+    }
+    .quick-card:hover { background: var(--accent-lt); color: var(--accent); border-color: var(--accent); }
+    .quick-card .quick-icon { font-size: 1.5rem; display: block; margin-bottom: .3rem; }
+ 
+    /* ==========================================================
+       SECCIÓN: PERFIL DEL MÉDICO
+    ========================================================== */
+    .profile-header {
+      display: flex; align-items: center; gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .avatar-lg {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #134e5e);
+      color: #fff; display: flex; align-items: center; justify-content: center;
+      font-size: 1.9rem; font-weight: 700; flex-shrink: 0;
+    }
+    .profile-header h3 { font-size: 1.35rem; font-weight: 700; }
+    .profile-header p  { color: var(--text-muted); margin: .2rem 0; }
+    .info-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem;
+    }
+    .info-item label {
+      display: block; font-size: .72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .06em;
+      color: var(--text-muted); margin-bottom: .2rem;
+    }
+    .info-item span { font-size: .95rem; font-weight: 500; }
+ 
+    /* ==========================================================
+       SECCIÓN: LISTA DE PACIENTES
+       — Cada tarjeta es colapsable. El botón "Ver más" navega
+       al perfil completo del paciente.
+    ========================================================== */
+    .search-bar {
+      display: flex; gap: .7rem; margin-bottom: 1.2rem;
+    }
+    .search-bar input {
+      flex: 1; padding: .65rem 1rem;
+      border: 1.5px solid var(--border); border-radius: var(--radius);
+      font-family: inherit; font-size: .9rem; outline: none;
+      transition: border-color var(--transition);
+    }
+    .search-bar input:focus { border-color: var(--accent); }
+    /* Tarjeta de paciente (modo lista) */
+    .patient-card {
+      background: var(--card); border-radius: var(--radius);
+      box-shadow: var(--shadow); margin-bottom: .9rem;
+      overflow: hidden; border: 1.5px solid transparent;
+      transition: border-color var(--transition);
+    }
+    .patient-card:hover { border-color: var(--border); }
+    .patient-card.expanded { border-color: var(--accent); }
+    /* Encabezado de la tarjeta — siempre visible */
+    .patient-header {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1rem 1.2rem; cursor: pointer;
+    }
+    .patient-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 1rem; color: #fff; flex-shrink: 0;
+    }
+    .patient-basic { flex: 1; }
+    .patient-basic strong { font-size: .97rem; display: block; }
+    .patient-basic span   { font-size: .8rem; color: var(--text-muted); }
+    .patient-meta {
+      display: flex; gap: .6rem; align-items: center; flex-wrap: wrap;
+    }
+    .expand-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 1.1rem; color: var(--text-muted); padding: .3rem;
+      transition: transform var(--transition), color var(--transition);
+    }
+    .expanded .expand-btn { transform: rotate(180deg); color: var(--accent); }
+    /* Info rápida desplegable */
+    .patient-collapse {
+      max-height: 0; overflow: hidden;
+      transition: max-height .35s ease, padding var(--transition);
+      border-top: 0 solid var(--border);
+    }
+    .expanded .patient-collapse {
+      max-height: 300px; padding: 1rem 1.2rem 1.2rem;
+      border-top-width: 1px;
+    }
+    .patient-quick-info {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: .8rem; margin-bottom: 1rem;
+    }
+    .patient-quick-info .info-item label { font-size: .68rem; }
+    .patient-actions { display: flex; gap: .6rem; flex-wrap: wrap; }
+ 
+    /* ==========================================================
+       SECCIÓN: PERFIL COMPLETO DEL PACIENTE
+       — Se muestra al pulsar "Ver perfil completo". Tiene tabs
+       internos: Historial | Medicamentos | Citas | Laboratorio.
+    ========================================================== */
+    #section-patient-profile { display: none; }
+    #section-patient-profile.active { display: block; }
+    .back-btn {
+      display: inline-flex; align-items: center; gap: .4rem;
+      font-size: .85rem; font-weight: 600; color: var(--accent);
+      background: none; border: none; cursor: pointer;
+      padding: 0; margin-bottom: 1rem;
+      transition: gap var(--transition);
+    }
+    .back-btn:hover { gap: .7rem; }
+    .patient-profile-header {
+      display: flex; align-items: center; gap: 1.5rem;
+      background: var(--card); border-radius: var(--radius);
+      padding: 1.4rem; box-shadow: var(--shadow); margin-bottom: 1.2rem;
+    }
+    .pp-avatar {
+      width: 72px; height: 72px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.7rem; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .pp-info h3 { font-size: 1.25rem; font-weight: 700; }
+    .pp-info p  { font-size: .85rem; color: var(--text-muted); margin-top: .15rem; }
+    .pp-info .badges { display: flex; gap: .5rem; margin-top: .5rem; flex-wrap: wrap; }
+ 
+    /* TABS INTERNOS del perfil de paciente */
+    .tabs {
+      display: flex; gap: .3rem;
+      border-bottom: 2px solid var(--border); margin-bottom: 1.2rem;
+    }
+    .tab-btn {
+      padding: .6rem 1.1rem; border: none; background: none;
+      font-family: inherit; font-size: .88rem; font-weight: 600;
+      color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent;
+      margin-bottom: -2px; transition: color var(--transition), border-color var(--transition);
+    }
+    .tab-btn.active { color: var(--accent); border-color: var(--accent); }
+    .tab-content { display: none; animation: fadeIn .2s ease; }
+    .tab-content.active { display: block; }
+ 
+    /* Línea de tiempo (historial médico) */
+    .timeline { position: relative; padding-left: 1.5rem; }
+    .timeline::before {
+      content: ''; position: absolute; left: .4rem; top: 0; bottom: 0;
+      width: 2px; background: var(--border);
+    }
+    .tl-item { position: relative; margin-bottom: 1.3rem; }
+    .tl-item::before {
+      content: ''; position: absolute; left: -1.38rem; top: .3rem;
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--accent); border: 2px solid #fff;
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+    .tl-date { font-size: .75rem; color: var(--text-muted); font-weight: 600; margin-bottom: .2rem; }
+    .tl-title { font-size: .95rem; font-weight: 600; margin-bottom: .15rem; }
+    .tl-desc  { font-size: .83rem; color: var(--text-muted); }
+    .tl-doctor{ font-size: .78rem; color: var(--accent); font-weight: 500; margin-top: .15rem; }
+ 
+    /* Tabla de medicamentos */
+    .med-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+    .med-table th {
+      text-align: left; padding: .6rem .9rem;
+      font-size: .72rem; text-transform: uppercase; letter-spacing: .07em;
+      color: var(--text-muted); border-bottom: 2px solid var(--border);
+    }
+    .med-table td {
+      padding: .7rem .9rem; border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .med-table tr:last-child td { border-bottom: none; }
+    .med-table tr:hover td { background: var(--bg); }
+ 
+    /* ==========================================================
+       SECCIÓN: CITAS MÉDICAS
+       — Tres pestañas: Pasadas / Pendientes / Futuras.
+    ========================================================== */
+    .cita-row {
+      display: flex; align-items: center; gap: 1rem;
+      padding: .85rem 1rem; border-radius: 9px;
+      background: var(--card); box-shadow: var(--shadow);
+      margin-bottom: .7rem; border-left: 4px solid var(--border);
+      transition: transform var(--transition);
+    }
+    .cita-row:hover { transform: translateX(3px); }
+    .cita-row.pasada  { border-color: var(--text-muted); }
+    .cita-row.pendiente { border-color: var(--warn); }
+    .cita-row.futura  { border-color: var(--ok); }
+    .cita-fecha {
+      min-width: 90px; text-align: center;
+      font-size: .8rem; font-weight: 700; color: var(--text);
+    }
+    .cita-fecha span { display: block; font-size: 1.4rem; line-height: 1; color: var(--accent); }
+    .cita-info { flex: 1; }
+    .cita-info strong { display: block; font-size: .95rem; }
+    .cita-info small  { color: var(--text-muted); font-size: .8rem; }
+ 
+    /* ==========================================================
+       SECCIÓN: HISTORIAL GLOBAL (estudios de lab/especiales)
+       — Tabla con filtros básicos.
+    ========================================================== */
+    .filter-bar {
+      display: flex; gap: .7rem; margin-bottom: 1rem; flex-wrap: wrap;
+    }
+    .filter-bar select, .filter-bar input {
+      padding: .55rem .9rem; border: 1.5px solid var(--border);
+      border-radius: var(--radius); font-family: inherit; font-size: .85rem;
+      outline: none; color: var(--text); background: var(--card);
+      transition: border-color var(--transition);
+    }
+    .filter-bar select:focus, .filter-bar input:focus { border-color: var(--accent); }
+    .lab-item {
+      display: flex; align-items: center; gap: 1rem;
+      padding: .85rem 1.1rem; background: var(--card);
+      border-radius: var(--radius); box-shadow: var(--shadow);
+      margin-bottom: .7rem;
+    }
+    .lab-icon {
+      width: 40px; height: 40px; border-radius: 9px;
+      background: var(--accent-lt); display: flex; align-items: center;
+      justify-content: center; font-size: 1.2rem; flex-shrink: 0;
+    }
+    .lab-info { flex: 1; }
+    .lab-info strong { display: block; font-size: .92rem; }
+    .lab-info small  { color: var(--text-muted); font-size: .78rem; }
+    .lab-actions { display: flex; gap: .5rem; }
+    .btn-ghost {
+      padding: .35rem .7rem; border-radius: 7px;
+      border: 1.5px solid var(--border); background: none;
+      font-family: inherit; font-size: .8rem; font-weight: 600;
+      cursor: pointer; color: var(--text-muted);
+      transition: background var(--transition), color var(--transition), border-color var(--transition);
+    }
+    .btn-ghost:hover { background: var(--accent-lt); color: var(--accent); border-color: var(--accent); }
+ 
+    /* ==========================================================
+       MODAL GENÉRICO
+       — Se usa para "nueva cita", "editar perfil", etc.
+       (Funcionalidad visual base; los formularios se conectarán
+       al backend en la etapa de desarrollo posterior.)
+    ========================================================== */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(13,27,42,.55);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1000; opacity: 0; pointer-events: none;
+      transition: opacity .25s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--card); border-radius: 14px;
+      padding: 2rem; width: 100%; max-width: 480px;
+      max-height: 90vh; overflow-y: auto;
+      box-shadow: 0 24px 60px rgba(0,0,0,.3);
+      transform: translateY(16px);
+      transition: transform .25s cubic-bezier(.4,0,.2,1);
+    }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.4rem;
+    }
+    .modal-header h3 { font-size: 1.05rem; font-weight: 700; }
+    .modal-close {
+      width: 30px; height: 30px; border-radius: 7px;
+      border: none; background: var(--bg); cursor: pointer;
+      font-size: .9rem; color: var(--text-muted);
+      transition: background var(--transition);
+    }
+    .modal-close:hover { background: #fde8e8; color: var(--danger); }
+    .modal-footer { display: flex; gap: .7rem; justify-content: flex-end; margin-top: 1.4rem; }
+ 
+    /* ==========================================================
+       SCROLLBAR PERSONALIZADO (Webkit)
+       — Estilo sobrio para evitar la barra de scroll por defecto.
+    ========================================================== */
+    ::-webkit-scrollbar      { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+ 
+    /* ==========================================================
+       RESPONSIVE BÁSICO — se puede expandir en versiones futuras
+    ========================================================== */
+    @media (max-width: 900px) {
+      .sidebar { width: 200px; min-width: 200px; }
+      .dash-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 650px) {
+      .sidebar { display: none; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+    }
